@@ -7,7 +7,7 @@ data:
   first_name:
     type: literal
     generator: mock
-    value: first_name
+    value: name.firstName
     data_type: string
     optional: false #by default
   last_name:
@@ -26,11 +26,12 @@ data:
     type: literal
     generator: mock
     data_type: string
-    value: date
+    value: date.birthday
   skills:
     type: list
     min_len: 2 #if not given upto value len
-    max_len: 3
+    max_len: 2
+    unique: true # in this case each index will then be unique!!!
     index:
       type: literal
       data_type: string
@@ -38,6 +39,7 @@ data:
   friend_list:
     type: list
     max_len: 5
+    min_len: 2
     index:
       type: object
       data:
@@ -49,7 +51,7 @@ data:
         first_name:
           type: literal
           generator: mock
-          value: first_name
+          value: name.firstName
           data_type: string
   expertise:
     type: object
@@ -89,8 +91,9 @@ data:
       max_len: 6
       index:
         type: literal
+        data_type: int
         generator: mock
-        value: first_name
+        value: name.firstName
 
 
 
@@ -114,3 +117,5 @@ data:
 
 # case sensitive data!
 # date and date format, timezone
+#probability to generate random data
+#null value in data YES or NO?

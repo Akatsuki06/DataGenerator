@@ -17,7 +17,7 @@ public class ListValueGenerator {
     @Autowired
     LiteralValueGenerator literalValueGenerator;
 
-    public List<Object> generate(Map<String,Object> props){
+    public List<Object> generate(Map<String,Object> props) throws Exception {
 
         List<Object> outputList = new ArrayList<>();
 
@@ -47,13 +47,13 @@ public class ListValueGenerator {
         }else if (indexType.equalsIgnoreCase("literal")){
             for (int i=0;i<nObj;i++){
                 Object outObject = literalValueGenerator.generate(index);
-                outputList.add(outObject);
+                 outputList.add(outObject);
             }
 
         }else if(indexType.equalsIgnoreCase("list")){
 
             for (int i=0;i<nObj;i++){
-                Object outObject = literalValueGenerator.generate(index);
+                Object outObject = this.generate(index);
                 outputList.add(outObject);
             }
 

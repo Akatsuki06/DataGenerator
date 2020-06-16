@@ -32,8 +32,10 @@ public class ApplicationInitializer implements ApplicationRunner {
         LOG.info("============Starting the application");
 
 
-        Map<String,Object> data =(Map<String,Object>)getYamlData("classpath:json/config.yml").get("data");
+        Map<String,Object> data =(Map<String,Object>)getYamlData("classpath:json/config2.yml").get("data");
         Map<String,Object> out = objectDataGenerator.generate(data);
+
+        //this out can be converted to xml, json,...
         LOG.info(new ObjectMapper().writeValueAsString(out));
         LOG.info("============Done generating data");
     }

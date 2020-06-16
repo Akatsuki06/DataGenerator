@@ -7,6 +7,7 @@ import com.github.javafaker.service.RandomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,6 +33,25 @@ public class LiteralValueGenerator {
         boolean optOut = DataUtility.generateRandomIntInRange(0,100)>75;//take value from service
         if (optional.equalsIgnoreCase("true") && optOut){
             return null;
+        }
+
+        if(dataType.equalsIgnoreCase("decimal")){
+            int min_val = Integer.parseInt(String.valueOf(props.getOrDefault("min_value",0)));
+            int max_val = Integer.parseInt(String.valueOf(props.get("max_value")));
+            int decimal = Integer.parseInt(String.valueOf(props.getOrDefault("decimal_places",2)));
+
+            String output = String.format("%." + decimal + "f", DataUtility.generateDecimalInRange(min_val,max_val));
+
+
+            return Double.valueOf(output);
+        }
+        if (dataType.equalsIgnoreCase("integer")){
+            int min_val = Integer.parseInt(String.valueOf(props.getOrDefault("min_value",0)));
+            int max_val = Integer.parseInt(String.valueOf(props.get("max_value")));
+
+            return DataUtility.generateRandomIntInRange(min_val,max_val);
+
+
         }
 
         if (props.containsKey("value_in")){

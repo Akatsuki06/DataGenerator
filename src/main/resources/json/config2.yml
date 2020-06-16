@@ -1,0 +1,57 @@
+
+data:
+  id:
+    type: literal
+    generator: regex
+    value: "[0-9](3)[1-9](1)"
+    data_type: string
+  type:
+    type: literal
+    value_in: ["Donut","Blah Blah","Abra"]
+    data_type: string
+  name:
+    type: literal
+    generator: mock
+    data_type: string
+    value: name.firstName
+  ppu:
+    type: literal
+    data_type: decimal
+    decimal_places: 4
+    min_value: 0
+    max_value: 5
+  batters:
+    type: object
+    data:
+      batter:
+        type: list
+        min_len: 3
+        max_len: 8
+        index:
+          type: object
+          data:
+            id:
+              type: literal
+              data_type: string
+              generator: regex
+              value: "[1-9](1)[0-9](3)"
+            type:
+              type: literal
+              value_in: ["chocolate","vanilla","blueberry","strawberry"]
+              data_type: string
+  topping:
+    type: list
+    min_len: 4
+    max_len: 4
+    index:
+      type: object
+      data:
+        id:
+          type: literal
+          data_type: string
+          generator: regex
+          value: "[5](1)[0-9](3)"
+        type:
+          type: literal
+          value_in: ["none","glazed","sugar","maple","powdered","chocolate"]
+          data_type: string

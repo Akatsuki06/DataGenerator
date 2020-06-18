@@ -6,8 +6,8 @@ jdk:
   - openjdk11
 before_install:
   - chmod +x mvnw
-jobs:
-  include:
-    - stage: "Unit Test"
-      script: ./mvn clean install
+#jobs:
+#  include:
+#    - stage: "Unit Test"
+#      script: ./mvn clean install
 

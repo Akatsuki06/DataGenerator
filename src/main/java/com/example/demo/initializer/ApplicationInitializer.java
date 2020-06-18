@@ -36,7 +36,9 @@ public class ApplicationInitializer implements ApplicationRunner {
         Map<String,Object> out = objectDataGenerator.generate(data);
 
         //this out can be converted to xml, json,...
-        LOG.info(new ObjectMapper().writeValueAsString(out));
+        LOG.info("json {}",new ObjectMapper().writeValueAsString(out));
+        LOG.info("yaml {}",new Yaml().dump(out));
+//        LOG.info("xml {}",new);
         LOG.info("============Done generating data");
     }
     Map<String,Object> getYamlData(String path) throws IOException {

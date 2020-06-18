@@ -1,7 +1,11 @@
 language: java
 dist: bionic
+sudo: true
+
 jdk:
   - openjdk11
+before_install:
+  - chmod +x mvnw
 jobs:
   include:
     - stage: "Unit Test"

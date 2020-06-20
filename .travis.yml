@@ -1,13 +1,26 @@
 language: java
-dist: bionic
 sudo: true
-
+services:
+  - docker
 jdk:
   - openjdk11
+
 before_install:
   - chmod +x mvnw
-#jobs:
-#  include:
-#    - stage: "Unit Test"
-#      script: ./mvn clean install
+#  - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT} .
+#  - docker run -d -p 127.0.0.1:8080:8080 ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT}
 
+#script:
+#  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#  - docker push ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT}
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+  - export DOCKER_IMAGE_NAME=surazneg/data-generator
+  - docker build -t $DOCKER_IMAGE_NAME:$TRAVIS_COMMIT .
+  - echo "$TRAVIS_COMMIT"
+  - echo "$DOCKER_IMAGE_NAME:$TRAVIS_COMMIT"
+  - echo "$DOCKER_IMAGE_NAME:$TAG"
+  - docker tag $DOCKER_IMAGE_NAME:$TRAVIS_COMMIT $DOCKER_IMAGE_NAME:$TAG
+  - docker push $DOCKER_IMAGE_NAME:$TRAVIS_COMMIT

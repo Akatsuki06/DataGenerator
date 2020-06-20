@@ -7,13 +7,6 @@ jdk:
 
 install: skip #skip install impliclty done on each stage by travis
 
-#  - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT} .
-#  - docker run -d -p 127.0.0.1:8080:8080 ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT}
-
-#script:
-#  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#  - docker push ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT}
-
 jobs:
   include:
     - stage: test
@@ -26,13 +19,4 @@ jobs:
       script: ./docker-build.sh
       before_install:
         - chmod +x docker-build.sh
-
-#
-#after_success:
-#  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "stable"; else echo $TRAVIS_BRANCH; fi`
-#  - export DOCKER_IMAGE_NAME=surazneg/data-generator
-#  - docker build -t $DOCKER_IMAGE_NAME:$TRAVIS_COMMIT .
-#  - docker tag $DOCKER_IMAGE_NAME:$TRAVIS_COMMIT $DOCKER_IMAGE_NAME:$TAG
-#  - docker push $DOCKER_IMAGE_NAME:$TAG
 

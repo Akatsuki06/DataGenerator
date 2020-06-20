@@ -19,4 +19,3 @@ jobs:
       script: ./docker-build.sh
       before_install:
         - chmod +x docker-build.sh
-

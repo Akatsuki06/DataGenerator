@@ -12,3 +12,6 @@
 - [ ] Random key generation
 - [ ] Optional data handling
 - [ ] meta data for generation
+- [ ] length of literal for non mock data
+- [ ] Feature for Meta informantion
+- [ ] Other than Object List/Constant are valid json!

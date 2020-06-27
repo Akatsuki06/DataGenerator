@@ -2,6 +2,7 @@ package com.example.demo.component;
 
 import com.example.demo.enums.DataDefinition;
 import com.example.demo.enums.ObjectType;
+import com.example.demo.exception.UndefinedTypeException;
 import com.example.demo.utils.DataUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,18 +55,17 @@ public class ListValueGenerator {
         }else if (ObjectType.LITERAL.equalsIgnoreCase(indexType)){
             for (int i=0;i<nObj;i++){
                 Object outObject = literalValueGenerator.generate(index);
-                 outputList.add(outObject);
+                //null check?
+                if (outObject!=null)outputList.add(outObject);
             }
-
         }else if(ObjectType.LIST.equalsIgnoreCase(indexType)){
-
             for (int i=0;i<nObj;i++){
                 Object outObject = this.generate(index);
                 outputList.add(outObject);
             }
-
         }else{
             System.out.println("Not valid Type");
+            throw new UndefinedTypeException("The type "+indexType+" is not a defined type.");
         }
 
 

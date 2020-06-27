@@ -2,6 +2,8 @@
 
 
 #data
+meta:
+  show_null: false
 
 data:
   first_name:
@@ -9,7 +11,7 @@ data:
     generator: mock
     value: name.firstName
     data_type: string
-    optional: false #by default
+    optional: true #by default
   last_name:
     type: literal
     value_in: ["Damon","Demon","Daemon"] # picks one value out of it!

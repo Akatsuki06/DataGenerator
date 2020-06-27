@@ -1,8 +1,8 @@
 # Features And Todo
 
 - [ ] Case sensitive Data
-- [ ] date, time, timezone support
-- [ ] Yml handling utility
+- [X] date, time, timezone support- will always be string in json
+- [X] Yml handling utility
 - [ ] XML data generation support 
 - [ ] Documentation 
 - [ ] Exception handlers
@@ -15,3 +15,4 @@
 - [ ] length of literal for non mock data
 - [ ] Feature for Meta informantion
 - [ ] Other than Object List/Constant are valid json!
+- [ ] concurrent threads to execute for multiple number of data

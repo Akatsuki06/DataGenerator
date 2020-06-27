@@ -14,14 +14,12 @@ public class YamlUtility {
             Path path = Paths.get(filePath);
             InputStream in = new FileInputStream(path.toFile());
             Map<String, Object> obj = yaml.load(in);
-            System.out.println(obj);
             return obj;
     }
     public static final Map<String,Object> readYamlFile(Path path) throws FileNotFoundException {
         Yaml yaml = new Yaml();
         InputStream in = new FileInputStream(path.toFile());
         Map<String, Object> obj = yaml.load(in);
-        System.out.println(obj);
         return obj;
     }
 }

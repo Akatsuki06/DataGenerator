@@ -5,7 +5,7 @@ public enum DataType {
     DECIMAL,
     INTEGER,
     BOOLEAN,
-    DATE_TIME;
+    DATE_TIME; //for xml based data
 
     public boolean equalsIgnoreCase(String val){
         return this.toString().equalsIgnoreCase(val);

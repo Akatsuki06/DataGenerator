@@ -5,4 +5,7 @@ import com.example.demo.enums.ObjectType;
 
 public class ApplicationConstants {
 
+    final  static String checkpoint =  DataDefinition.CHECKPOINT.toString();
+
+
 }

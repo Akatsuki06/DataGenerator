@@ -42,6 +42,7 @@ public class ApplicationInitializer implements ApplicationRunner {
         List<String> generatedData = new ArrayList<>();
 
         long startTime = System.currentTimeMillis();
+        n=1;
         for (int i=0;i<n;i++){
             generatedData.add(dataGeneratorService.generate());
         }

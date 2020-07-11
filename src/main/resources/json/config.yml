@@ -5,119 +5,132 @@
 meta:
   show_null: false
 
+
 data:
-  first_name:
-    type: literal
-    generator: mock
-    value: name.firstName
-    data_type: string
-    optional: true #by default
-  last_name:
-    type: literal
-    value_in: ["Damon","Demon","Daemon"] # picks one value out of it!
-#    generator: mock not required if value_in is there already
-#    value: last_name not required if value_in is there
-    data_type: string
-    optional: false
-  id:
-    type: literal #type is literal, introduce value type as regex!, value_in, generator..so on
-    data_type: string
-    generator: regex
-    value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
-  dob: #featur date with format, timezone
-    type: literal
-    generator: mock
-    data_type: string
-    value: date.birthday
-  skills:
-    type: list
-    min_len: 2 #if not given upto value len
-    max_len: 2
-    unique: true # in this case each index will then be unique!!!
-    index:
+  keys:
+    first_name:
       type: literal
+      generator: mock
+      value: name.firstName
       data_type: string
-      value_in: ["java","python","js","cpp","c#"]  # if data it will be list of object else normal stuff here
-  friend_list:
-    type: list
-    max_len: 5
-    min_len: 2
-    index:
-      type: object
-      data:
-        id:
-          type: literal
-          generator: regex
-          data_type: string
-          value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
-        first_name:
-          type: literal
-          generator: mock
-          value: name.firstName
-          data_type: string
-  expertise:
-    type: object
-#    value: data not required
-    data:
-      java:
-        type: object
-#        value: data not required
-        optional: true
-        data:
-          spring boot:
-            type: literal
-            value_in: ["beginner","proficient","advanced","expert"]
-            optional: true
-          kafka:
-            type: literal
-            value_in: ["beginner","proficient","advanced","expert"]
-            optional: true
-      python:
-        type: object
-        value: data
-        optional: true
-        data:
-          django:
-            type: literal
-            value_in: ["beginner","proficient","advanced","expert"]
-            optional: true
-          keras:
-            type: literal
-            value_in: ["beginner","proficient","advanced","expert"]
-            optional: true
-  arrays:
-    type: list
-    max_len: 5
-    index:
+      optional: true #by default
+    last_name:
+      type: literal
+      value_in: ["Damon","Demon","Daemon"] # picks one value out of it!
+  #    generator: mock not required if value_in is there already
+  #    value: last_name not required if value_in is there
+      data_type: string
+      optional: false
+    id:
+      type: literal #type is literal, introduce value type as regex!, value_in, generator..so on
+      data_type: string
+      generator: regex
+      value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
+      checkpoint: CHECKPOINT_ID
+    dob: #featur date with format, timezone
+      type: literal
+      generator: mock
+      data_type: string
+      value: date.birthday
+  #  info:
+  #    data:
+  #      id:
+  #        value_use: ID # if this is defined, then only define data type, dont use save with this!
+  #        data_type: string
+    skills:
       type: list
-      max_len: 6
+      min_len: 2 #if not given upto value len
+      max_len: 2
+      unique: true # in this case each index will then be unique!!!
       index:
         type: literal
-        data_type: int
-        generator: mock
-        value: name.firstName
+        data_type: string
+        value_in: ["java","python","js","cpp","c#"]  # if data it will be list of object else normal stuff here
+    friendList:
+      type: list
+      max_len: 5
+      min_len: 2
+      index:
+        type: object
+        data:
+          keys:
+            id:
+              use: CHECKPOINT_ID
+              type: literal
+              generator: regex
+              data_type: string
+              value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
+            first_name:
+              type: literal
+              generator: mock
+              value: name.firstName
+              data_type: string
+    expertise:
+      type: object
+  #    value: data not required
+      data:
+        keys:
+          java:
+            type: object
+    #        value: data not required
+            optional: true
+            data:
+              keys:
+                spring boot:
+                  type: literal
+                  value_in: ["beginner","proficient","advanced","expert"]
+                  optional: true
+                kafka:
+                  type: literal
+                  value_in: ["beginner","proficient","advanced","expert"]
+                  optional: true
+          python:
+            type: object
+            value: data
+            optional: true
+            data:
+              keys:
+                django:
+                  type: literal
+                  value_in: ["beginner","proficient","advanced","expert"]
+                  optional: true
+                keras:
+                  type: literal
+                  value_in: ["beginner","proficient","advanced","expert"]
+                  optional: true
+    arrays:
+      type: list
+      max_len: 5
+      index:
+        type: list
+        max_len: 6
+        index:
+          type: literal
+          data_type: int
+          generator: mock
+          value: name.firstName
 
 
 
 
 
 
-#literal -> value
-#list -> index
-#object ->data
+  #literal -> value
+  #list -> index
+  #object ->data
 
-#types: literal, literal_mock, literal_regex,  object, list , literal_set (to take form selected set)
-#literal_mock, data_type
+  #types: literal, literal_mock, literal_regex,  object, list , literal_set (to take form selected set)
+  #literal_mock, data_type
 
-#    values will give constant value in list
+  #    values will give constant value in list
 
-#list a list of values , constant ( a constant value),
-#value_in, values_in, value_in
+  #list a list of values , constant ( a constant value),
+  #value_in, values_in, value_in
 
 
-#FEATURE:
+  #FEATURE:
 
-# case sensitive data!
-# date and date format, timezone
-#probability to generate random data
-#null value in data YES or NO?
+  # case sensitive data!
+  # date and date format, timezone
+  #probability to generate random data
+  #null value in data YES or NO?

@@ -15,6 +15,8 @@ public enum DataDefinition {
     MAX_VALUE,
     MIN_VALUE,
     INDEX,
+    CHECKPOINT,
+    USE,
     DATA;
 
     @Override

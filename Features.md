@@ -16,3 +16,6 @@
 - [ ] Feature for Meta informantion
 - [ ] Other than Object List/Constant are valid json!
 - [ ] concurrent threads to execute for multiple number of data
+- [ ] keep a value already generated in a var
+- [ ] negative numbers
+- [ ] concurrency issue, beans are singleton

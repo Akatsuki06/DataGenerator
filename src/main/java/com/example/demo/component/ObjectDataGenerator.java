@@ -3,6 +3,7 @@ package com.example.demo.component;
 import com.example.demo.enums.DataDefinition;
 import com.example.demo.enums.ObjectType;
 import com.example.demo.exception.UndefinedTypeException;
+import com.example.demo.service.CheckpointResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.demo.enums.DataDefinition.CHECKPOINT;
+
 
 @Component
-public class ObjectDataGenerator implements AbstractGenerator {
+public class ObjectDataGenerator  {
 
     Logger LOG = LoggerFactory.getLogger(ObjectDataGenerator.class);
 
@@ -23,45 +26,44 @@ public class ObjectDataGenerator implements AbstractGenerator {
     @Autowired
     LiteralValueGenerator literalValueGenerator;
 
-    @Override
-    public Map<String,Object> generate(Map<String,Object> data) throws Exception{
-        Map<String,Object> outputData = new HashMap<>();
-        for (Map.Entry<String,Object> obj : data.entrySet()){
-                String key = obj.getKey();
+    private CheckpointResolver checkpointResolver;
+
+
+    public void generate(Map<String,Object> output,Map<String,Object> objProps, String key) throws Exception{
+        Map<String,Object> mapData = new HashMap<>();
+
+
+        //check for USE first if its USE go ahead and write to table
+
+
+        Map<String,Object> keys = (Map<String,Object>)objProps.get("keys");
+        for (Map.Entry<String,Object> obj : keys.entrySet()){
+                String objKey = obj.getKey();
                 Map<String, Object> props = (Map<String, Object>) obj.getValue();
                 String type = String.valueOf(props.get(DataDefinition.TYPE.toString()));
                 String optional = String.valueOf(props.get(DataDefinition.OPTIONAL.toString()));
 
-                /*some mathematics for randomising optional*/
-
                 if (ObjectType.LITERAL.equalsIgnoreCase(type)) {
-                    Object object = generateValue(props);
-                    if (object!=null) outputData.put(key,object);
+                     literalValueGenerator.generate(mapData,props, objKey);
                 } else if (ObjectType.LIST.equalsIgnoreCase(type)) {
-                    List<Object> objects =  generateListValue(props);
-                    if (objects!=null)outputData.put(key,objects);
+                    listValueGenerator.generate(mapData,props, objKey);
                 } else if ((ObjectType.OBJECT.equalsIgnoreCase(type))) {
-                    Map<String,Object> object = this.generate((Map<String, Object>) props.get(DataDefinition.DATA.toString()));
-                    if (object!=null)outputData.put(key,object);
+                    generate(mapData,(Map<String, Object>) props.get(DataDefinition.DATA.toString()),objKey);
                 } else {
                     throw new UndefinedTypeException("The type `"+type+"` is not a defined type.");
                 }
         }
-        return outputData;
+
+
+        output.put(key,mapData);
+
+        //Check for CHECKPOINT at the end, go ahead and save it to table
 
     }
 
 
-    @Override
-    public Object generateValue(Map<String, Object> props) throws Exception {
-//    todo:    if (props.get("type")) check type here
-        return literalValueGenerator.generate(props);
+    public void setCheckpointResolver(CheckpointResolver checkpointResolver) {
+        this.checkpointResolver = checkpointResolver;
     }
 
-    @Override
-    public List<Object> generateListValue(Map<String, Object> props) throws Exception {
-        //   todo:     if (props.get("type")) check type here
-
-        return listValueGenerator.generate(props);
-    }
 }

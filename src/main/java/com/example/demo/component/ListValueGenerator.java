@@ -3,6 +3,7 @@ package com.example.demo.component;
 import com.example.demo.enums.DataDefinition;
 import com.example.demo.enums.ObjectType;
 import com.example.demo.exception.UndefinedTypeException;
+import com.example.demo.service.CheckpointResolver;
 import com.example.demo.utils.DataUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.demo.enums.DataDefinition.CHECKPOINT;
 
 @Component
 public class ListValueGenerator {
@@ -23,60 +27,40 @@ public class ListValueGenerator {
     @Autowired
     LiteralValueGenerator literalValueGenerator;
 
-    public List<Object> generate(Map<String,Object> props) throws Exception {
+    private CheckpointResolver checkpointResolver;
+
+
+    public void generate(Map<String,Object> output, Map<String,Object> props, String key) throws Exception {
 
         List<Object> outputList = new ArrayList<>();
-
         int max_len =(int) props.get(DataDefinition.MAX_LEN.toString());//its mandatory
         int min_len = (int) props.getOrDefault(DataDefinition.MIN_LEN.toString(),0);
         int nObj = DataUtility.generateRandomIntInRange(min_len,max_len+1);
-
         Map<String,Object> index = (Map<String, Object>) props.get("index");
-
-        Map<String,Object> indices = (Map<String,Object>)props.get("indices");
-//indide indices we will have index_0, index_1,index_2.. index for others
-//        can be index_n for
-//        *** feature yet to be implemented
-
         String indexType = ((String)index.get(DataDefinition.TYPE.toString()));
-
-        if (ObjectType.OBJECT.equalsIgnoreCase(indexType)){
-
-
-            //max_len is inclusive here
-            for (int i=0;i<nObj;i++){
-                Map<String,Object> outObject =
-                        objectDataGenerator.generate((Map<String, Object>) index.get(DataDefinition.DATA.toString()));
-                outputList.add(outObject);
+        Map<String,Object> mapData = new HashMap<>();
+        for (int i = 0; i <nObj ; i++) {
+            if (ObjectType.OBJECT.equalsIgnoreCase(indexType)){
+                    objectDataGenerator.generate(mapData,(Map<String, Object>) index.get(DataDefinition.DATA.toString()),key);
+            }else if (ObjectType.LITERAL.equalsIgnoreCase(indexType)){
+                   literalValueGenerator.generate(mapData,index,key);
+            }else if(ObjectType.LIST.equalsIgnoreCase(indexType)){
+                    this.generate(mapData,index,key);
+            }else{
+                System.out.println("Not valid Type");
+                throw new UndefinedTypeException("The type "+indexType+" is not a defined type.");
             }
-            return outputList;
-
-
-        }else if (ObjectType.LITERAL.equalsIgnoreCase(indexType)){
-            for (int i=0;i<nObj;i++){
-                Object outObject = literalValueGenerator.generate(index);
-                //null check?
-                if (outObject!=null)outputList.add(outObject);
-            }
-        }else if(ObjectType.LIST.equalsIgnoreCase(indexType)){
-            for (int i=0;i<nObj;i++){
-                Object outObject = this.generate(index);
-                outputList.add(outObject);
-            }
-        }else{
-            System.out.println("Not valid Type");
-            throw new UndefinedTypeException("The type "+indexType+" is not a defined type.");
+            outputList.add(mapData.get(key));
         }
-
-
-
-//        it can be case that each index is defined in such case indices can be checked for
-
-
-        return outputList;
+        if (props.get(CHECKPOINT)!=null){
+            System.out.println("saving...");
+            checkpointResolver.checkpoint(String.valueOf(props.get(CHECKPOINT)),outputList);
+        }
+        output.put(key,outputList);
     }
 
 
-
-
+    public void setCheckpointResolver(CheckpointResolver checkpointResolver) {
+        this.checkpointResolver = checkpointResolver;
+    }
 }

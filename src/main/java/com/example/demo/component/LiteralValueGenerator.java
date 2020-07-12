@@ -19,9 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.example.demo.enums.DataDefinition.CHECKPOINT;
-import static com.example.demo.enums.DataDefinition.USE;
-
 @Component
 public class LiteralValueGenerator {
     Logger LOG = LoggerFactory.getLogger(LiteralValueGenerator.class);
@@ -42,57 +39,58 @@ public class LiteralValueGenerator {
 
     public void generate(Map<String,Object> output, Map<String,Object> props, String key) throws Exception {
 
-        Object result = null;
-        String dataType = (String) props.get(DataDefinition.DATA_TYPE.toString());
-        String optional = String.valueOf(props.get(DataDefinition.OPTIONAL.toString()));
-        boolean optOut = DataUtility.generateRandomIntInRange(0,100)>65;//take value from service
-        if (optional.equalsIgnoreCase("true") && optOut){
-            return ;
-            /**todo**/
-        }
+        Object result =null;
 
-        boolean isValueIn = props.containsKey(DataDefinition.VALUE_IN.toString());
-        boolean isGenerator = props.containsKey(DataDefinition.GENERATOR.toString());
 
-        if (!isValueIn && !isGenerator){
-            if(DataType.DECIMAL.equalsIgnoreCase(dataType)){
-                result = getDoubleValue(props);
-            }
-            if (DataType.INTEGER.equalsIgnoreCase(dataType)){
-                result = getIntegerValue(props);
-            }
+        String id = (String)props.get("use");
+        String checkPoint = (String) props.get("checkpoint");
+        if (id!=null) {
+            checkpointResolver.use(id,key,output);
         }
-        else if (isValueIn){
-            List<Object> values = (List<Object>) props.get(DataDefinition.VALUE_IN.toString());
-            result = values.get(DataUtility.generateRandomIntInRange(0,values.size()));
-        }
-        else {
-            String generator = String.valueOf(props.get(DataDefinition.GENERATOR.toString()));
-            if (GeneratorType.MOCK.equalsIgnoreCase(generator)){
-                result = fakerContextResolver.getValue(String.valueOf(props.get(DataDefinition.VALUE.toString())));
-            }else if (GeneratorType.REGEX.equalsIgnoreCase(generator)){
-                result = fakeValuesService.regexify(String.valueOf(props.get(DataDefinition.VALUE.toString())));
+        else{
+            String dataType = (String) props.get(DataDefinition.DATA_TYPE.toString());
+            boolean optOut = DataUtility.generateRandomIntInRange(0,100)>65;//take value from service
+            boolean optional =
+                    "true".equalsIgnoreCase(String.valueOf(props.get(DataDefinition.OPTIONAL.toString())))
+                    &&
+                    optOut;
+
+            if (!optional){
+
+                boolean isValueIn = props.containsKey(DataDefinition.VALUE_IN.toString());
+                boolean isGenerator = props.containsKey(DataDefinition.GENERATOR.toString());
+
+                if (!isValueIn && !isGenerator){
+                    if(DataType.DECIMAL.equalsIgnoreCase(dataType)){
+                        result = getDoubleValue(props);
+                    }
+                    if (DataType.INTEGER.equalsIgnoreCase(dataType)){
+                        result = getIntegerValue(props);
+                    }
+                }
+                else if (isValueIn){
+                    List<Object> values = (List<Object>) props.get(DataDefinition.VALUE_IN.toString());
+                    result = values.get(DataUtility.generateRandomIntInRange(0,values.size()));
+                }
+                else {
+                    String generator = String.valueOf(props.get(DataDefinition.GENERATOR.toString()));
+                    if (GeneratorType.MOCK.equalsIgnoreCase(generator)){
+                        result = fakerContextResolver.getValue(String.valueOf(props.get(DataDefinition.VALUE.toString())));
+                    }else if (GeneratorType.REGEX.equalsIgnoreCase(generator)){
+                        result = fakeValuesService.regexify(String.valueOf(props.get(DataDefinition.VALUE.toString())));
+                    }else{
+                        throw new UndefinedTypeException("The generator "+generator+" is not a defined.");
+                    }
+                }
             }else{
-                throw new UndefinedTypeException("The generator "+generator+" is not a defined.");
+                result = null;
             }
         }
-
-
         output.put(key,result);
 
-        //checkpoint things
-
-        if (props.get(CHECKPOINT.toString())!=null){
-            System.out.println("saving..."+props.get(CHECKPOINT.toString()));
-            System.out.println("result is.."+result);
-            checkpointResolver.checkpoint(String.valueOf(props.get(CHECKPOINT.toString())),result);
+        if (id==null && checkPoint!=null){
+            checkpointResolver.save(checkPoint,result);
         }
-
-        if (props.get(USE.toString())!=null){
-            checkpointResolver.use(String.valueOf(props.get(USE.toString())),key,output);
-        }
-
-
 
     }
 

@@ -7,7 +7,6 @@ import com.example.demo.utils.YamlUtility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -48,11 +47,16 @@ public class DataGeneratorService {
         objectDataGenerator.generate(outputData,data,"result");
 
 
-        System.out.println(checkpointResolver.getIdKey());
-        System.out.println(checkpointResolver.getIdObject());
+        System.out.println("use MAP: "+checkpointResolver.getUseMap());
+        System.out.println("save MAP: "+checkpointResolver.getSaveMap());
 
 
         checkpointResolver.resolve();
+
+        System.out.println("use MAP: "+checkpointResolver.getUseMap());
+        System.out.println("save MAP: "+checkpointResolver.getSaveMap());
+
+
 
         //map.values().removeIf(Objects::isNull);
         //this out can be converted to xml, json,...

@@ -11,12 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 
 @Component
 public class ObjectDataGenerator  {
 
-    Logger LOG = LoggerFactory.getLogger(ObjectDataGenerator.class);
+    Logger logger = LoggerFactory.getLogger(ObjectDataGenerator.class);
 
     @Autowired
     ListValueGenerator listValueGenerator;
@@ -26,11 +27,11 @@ public class ObjectDataGenerator  {
 
 
 
-    public void generate(Map<String,Object> output,Map<String,Object> schema, String key,String path, CheckpointResolver checkpointResolver) throws Exception{
+    public void generate(Map<String,Object> output, Map<String,Object> schema, String key, Stack<String> path, CheckpointResolver checkpointResolver) throws Exception{
         Map<String,Object> mapData = new HashMap<>();
 
         String id = (String)schema.get("use");
-        path = path+"/"+key;
+        path.push(key);
 
         if (id!=null){
             if (checkpointResolver==null){
@@ -69,5 +70,6 @@ public class ObjectDataGenerator  {
             }
         }
         output.put(key,mapData);
+        path.pop();
     }
 }

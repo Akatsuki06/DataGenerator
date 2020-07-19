@@ -1,7 +1,7 @@
 package com.example.demo.component;
 
-import com.example.demo.enums.DataDefinition;
-import com.example.demo.enums.ObjectType;
+import com.example.demo.constants.DataDefinition;
+import com.example.demo.constants.ObjectType;
 import com.example.demo.exception.UndefinedTypeException;
 import com.example.demo.service.CheckpointResolver;
 import com.example.demo.utils.DataUtility;
@@ -15,62 +15,56 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.demo.enums.DataDefinition.CHECKPOINT;
-
 @Component
 public class ListValueGenerator {
-    Logger LOG = LoggerFactory.getLogger(ListValueGenerator.class);
+    private final Logger logger = LoggerFactory.getLogger(ListValueGenerator.class);
 
     @Autowired
     ObjectDataGenerator objectDataGenerator;
 
     @Autowired
-    LiteralValueGenerator literalValueGenerator;
-
-    private CheckpointResolver checkpointResolver;
+    ConstantValueGenerator constantValueGenerator;
 
 
-    public void generate(Map<String,Object> output, Map<String,Object> props, String key) throws Exception {
+
+    public void generate(Map<String,Object> output, Map<String,Object> schema, String key,String path, CheckpointResolver checkpointResolver) throws Exception {
 
         List<Object> outputList = new ArrayList<>();
-        String id = (String)props.get("use");
-        String checkPoint = (String) props.get("checkpoint");
-
+        String id = (String)schema.get("use");
+        path = path+"/"+key;
 
         if (id!=null){
-            checkpointResolver.use(id,key,output);
+            outputList = (List<Object>)checkpointResolver.getForCheckpoint(id);
         }else{
-            //optiaonl conditino here
-            // if optional then with some probability outputList can be set to Null
-            int max_len =(int) props.get(DataDefinition.MAX_LEN.toString());//its mandatory
-            int min_len = (int) props.getOrDefault(DataDefinition.MIN_LEN.toString(),0);
+            int max_len =(int) schema.get(DataDefinition.MAX_LEN);//its mandatory else throw exception
+            int min_len = (int) schema.getOrDefault(DataDefinition.MIN_LEN,0);
             int nObj = DataUtility.generateRandomIntInRange(min_len,max_len+1);
-            Map<String,Object> index = (Map<String, Object>) props.get("index");
-            String indexType = ((String)index.get(DataDefinition.TYPE.toString()));
-            Map<String,Object> mapData = new HashMap<>();
-            for (int i = 0; i <nObj ; i++) {
-                if (ObjectType.OBJECT.equalsIgnoreCase(indexType)){
-                        objectDataGenerator.generate(mapData,(Map<String, Object>) index.get(DataDefinition.DATA.toString()),key);
-                }else if (ObjectType.LITERAL.equalsIgnoreCase(indexType)){
-                       literalValueGenerator.generate(mapData,index,key);
-                }else if(ObjectType.LIST.equalsIgnoreCase(indexType)){
-                        this.generate(mapData,index,key);
-                }else{
-                    System.out.println("Not valid Type");
-                    throw new UndefinedTypeException("The type "+indexType+" is not a defined type.");
+            String optional =String.valueOf(schema.get(DataDefinition.OPTIONAL));
+
+            if (!DataUtility.generateOptional(optional)){
+                Map<String,Object> index = (Map<String, Object>) schema.get("index");
+                String indexType = ((String)index.get(DataDefinition.TYPE));
+                Map<String,Object> mapData = new HashMap<>();
+                for (int i = 0; i <nObj ; i++) {
+                    if (ObjectType.OBJECT.equalsIgnoreCase(indexType)){
+                            objectDataGenerator.generate(mapData,(Map<String, Object>) index.get(DataDefinition.DATA),key,path,checkpointResolver);
+                    }else if (ObjectType.CONSTANT.equalsIgnoreCase(indexType)){
+                           constantValueGenerator.generate(mapData,index,key,path,checkpointResolver);
+                    }else if(ObjectType.LIST.equalsIgnoreCase(indexType)){
+                            this.generate(mapData,index,key,path,checkpointResolver);
+                    }else{
+                        System.out.println("Not valid Type");
+                        throw new UndefinedTypeException("The type "+indexType+" is not a defined type.");
+                    }
+                    outputList.add(mapData.get(key));
                 }
-                outputList.add(mapData.get(key));
+            }else{
+                outputList =null;
             }
         }
         output.put(key,outputList);
 
-        if (id==null && checkPoint!=null){
-            checkpointResolver.save(checkPoint,outputList);
-        }
     }
 
 
-    public void setCheckpointResolver(CheckpointResolver checkpointResolver) {
-        this.checkpointResolver = checkpointResolver;
-    }
 }

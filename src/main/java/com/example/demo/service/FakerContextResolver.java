@@ -13,7 +13,7 @@ public class FakerContextResolver {
 
     Logger LOG = LoggerFactory.getLogger(FakerContextResolver.class);
 
-    Faker faker = new Faker();
+    final Faker faker = new Faker();
 
     public Object getValue(String key) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         String [] attrs = key.split("\\.");

@@ -1,100 +1,41 @@
 package com.example.demo.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-//todo: different version of USE to tackle with current  issues with checkpoint
-//@Configuration
-//@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+import com.example.demo.component.ObjectDataGenerator;
+
+import java.util.*;
+
 public class CheckpointResolver {
 
-    //now in useMap I will store the object and the key and the ID to get value from lookUpMap
-    // in
 
-    private Map<String,Object> saveMap; //save id and Object of checkpoint
-    private Map<String, List<Map<String,Object>>> useMap; // save id and key of use
+    private ObjectDataGenerator objectDataGenerator;
 
-    public CheckpointResolver(){
-        useMap =new HashMap<>();
-        saveMap =new HashMap<>();
-    }
-
-    public void save(String id, Object value){
-        saveMap.put(id,value);
-    }
-
-    public void use (String id, String key, Map<String,Object> output){
-        String key2 = id+"-"+key;
-        if (!useMap.containsKey(key2)){
-            List<Map<String,Object>> outputList = new ArrayList<>();
-            outputList.add(output);
-            useMap.put(key2,outputList);
-        }else{
-            List<Map<String,Object>> outputList = useMap.get(key2);
-            outputList.add(output);
-            useMap.put(key2,outputList);
-        }
-    }
-
-    public void use(String id,Object value){
-//        useMap.put(id, value);
+    private Map<String,Object> checkpointDataStore;
+    public CheckpointResolver(ObjectDataGenerator objectDataGenerator){
+        this.objectDataGenerator = objectDataGenerator;
+        checkpointDataStore =new HashMap<>();
     }
 
 
+    public void generateForCheckpoints(Map<String,Object> checkpoints ) throws Exception {
 
-    public void resolve(){
-
-
-
-        for (String key2: useMap.keySet())
-        {
-
-
-            String id = key2.split("-",2)[0];
-            String key = key2.split("-",2)[1];
-
-
-            List<Map<String,Object>> outputList =useMap.get(key2);
-
-            for (Map<String,Object> output: outputList) {
-
-
-                Object value = saveMap.get(id);
-                System.out.println("value from saveMap " + value + " for id " + id);
-
-                if (value != null) {
-
-                    output.put(key, value);
-
-                } else {
-                    System.out.println("null value");
-                }
-            }
-        }
-    }
-
-    public Map<String, Object> getSaveMap() {
-        return saveMap;
-    }
-
-    public Map<String, List<Map<String,Object>>> getUseMap() {
-        return useMap;
-    }
-
-    public static void main(String[] args) {
-
-        Object saved = "Hello world";
-
-        Object use = new Object();
-        use = saved;
-
-
-        System.out.println(use);
+        Map<String,Object> allKeys = new HashMap<>();
+        allKeys.put("keys",checkpoints);
+        Map<String,Object> out = new HashMap<>();
+        objectDataGenerator.generate(out,allKeys,"result","",null);//checkpoint null so
+        checkpointDataStore =(Map<String,Object>) out.get("result");
 
     }
 
+    public Object getForCheckpoint(String key){
+        System.out.println(checkpointDataStore);
+        System.out.println(key);
+        return checkpointDataStore.get(key);
+    }
+
+    public Map<String, Object> getCheckpointDataStore() {
+        return checkpointDataStore;
+    }
 }
 //APPROACH:
 /*

@@ -1,35 +1,50 @@
 
+#concat two  string values
+# value_concat : delimeter comma separeted checkpoint <only for string>
 
 
 #data
 meta:
   show_null: false
 
+checkpoints:
+  CHECKPOINT_FN:
+    type: constant
+    constant_type: mock
+    value: name.firstName
+    data_type: string
+  CHECKPOINT_ID:
+    type: constant
+    data_type: string
+    constant_type: regex
+    value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
+
+
 
 data:
   keys:
     first_name:
-      type: literal
-      generator: mock
+      type: constant
+      constant_type: mock
       value: name.firstName
       data_type: string
-      optional: true #by default
+      use: CHECKPOINT_FN
     last_name:
-      type: literal
+      type: constant
       value_in: ["Damon","Demon","Daemon"] # picks one value out of it!
-  #    generator: mock not required if value_in is there already
+  #    constant_type: mock not required if value_in is there already
   #    value: last_name not required if value_in is there
       data_type: string
       optional: false
     id:
-      type: literal #type is literal, introduce value type as regex!, value_in, generator..so on
+      type: constant #type is constant, introduce value type as regex!, value_in, constant_type..so on
       data_type: string
-      generator: regex
+      constant_type: regex
       value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
-      checkpoint: CHECKPOINT_ID
+#      checkpoint: CHECKPOINT_ID
     dob: #featur date with format, timezone
-      type: literal
-      generator: mock
+      type: constant
+      constant_type: mock
       data_type: string
       value: date.birthday
   #  info:
@@ -43,7 +58,7 @@ data:
       max_len: 2
       unique: true # in this case each index will then be unique!!!
       index:
-        type: literal
+        type: constant
         data_type: string
         value_in: ["java","python","js","cpp","c#"]  # if data it will be list of object else normal stuff here
     friendList:
@@ -56,13 +71,13 @@ data:
           keys:
             id:
               use: CHECKPOINT_ID
-              type: literal
-              generator: regex
+              type: constant
+              constant_type: regex
               data_type: string
               value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
             first_name:
-              type: literal
-              generator: mock
+              type: constant
+              constant_type: mock
               value: name.firstName
               data_type: string
     expertise:
@@ -77,11 +92,11 @@ data:
             data:
               keys:
                 spring boot:
-                  type: literal
+                  type: constant
                   value_in: ["beginner","proficient","advanced","expert"]
                   optional: true
                 kafka:
-                  type: literal
+                  type: constant
                   value_in: ["beginner","proficient","advanced","expert"]
                   optional: true
           python:
@@ -91,11 +106,11 @@ data:
             data:
               keys:
                 django:
-                  type: literal
+                  type: constant
                   value_in: ["beginner","proficient","advanced","expert"]
                   optional: true
                 keras:
-                  type: literal
+                  type: constant
                   value_in: ["beginner","proficient","advanced","expert"]
                   optional: true
     arrays:
@@ -105,21 +120,19 @@ data:
         type: list
         max_len: 6
         index:
-          type: literal
-          data_type: int
-          generator: mock
-          value: name.firstName
+          type: constant
+          use: CHECKPOINT_FN
 
 
 
 
 
 
-  #literal -> value
+  #constant -> value
   #list -> index
   #object ->data
 
-  #types: literal, literal_mock, literal_regex,  object, list , literal_set (to take form selected set)
+  #types: constant, literal_mock, literal_regex,  object, list , literal_set (to take form selected set)
   #literal_mock, data_type
 
   #    values will give constant value in list

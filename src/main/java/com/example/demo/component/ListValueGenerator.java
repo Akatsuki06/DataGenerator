@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ListValueGenerator {
@@ -27,11 +24,11 @@ public class ListValueGenerator {
 
 
 
-    public void generate(Map<String,Object> output, Map<String,Object> schema, String key,String path, CheckpointResolver checkpointResolver) throws Exception {
+    public void generate(Map<String,Object> output, Map<String,Object> schema, String key, Stack<String> path, CheckpointResolver checkpointResolver) throws Exception {
 
         List<Object> outputList = new ArrayList<>();
         String id = (String)schema.get("use");
-        path = path+"/"+key;
+        path.push(key);
 
         if (id!=null){
             outputList = (List<Object>)checkpointResolver.getForCheckpoint(id);
@@ -63,6 +60,7 @@ public class ListValueGenerator {
             }
         }
         output.put(key,outputList);
+        path.pop();
 
     }
 

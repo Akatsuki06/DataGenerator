@@ -5,7 +5,7 @@
 
 #data
 meta:
-  show_null: false
+  key: value
 
 checkpoints:
   CHECKPOINT_FN:

@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DataGeneratorService {
@@ -33,7 +32,7 @@ public class DataGeneratorService {
     public String generate() throws Exception {
 
         CheckpointResolver checkpointResolver = new CheckpointResolver(objectDataGenerator);
-
+        Stack<String> path = new Stack<>();
         Map<String,Object> ymlData = YamlUtility.readYamlFile(schemaPath);
         Map<String,Object> data = (Map<String,Object>)ymlData.get("data");
         Map<String,Object> checkpoints = (Map<String,Object>)ymlData.get("checkpoints");
@@ -42,7 +41,7 @@ public class DataGeneratorService {
 
         checkpointResolver.generateForCheckpoints(checkpoints);
         //todo: use a queue instead of string path!
-        objectDataGenerator.generate(outputData,data,"result","",checkpointResolver);
+        objectDataGenerator.generate(outputData,data,"result",path,checkpointResolver);
 
 
         String result = new ObjectMapper().writeValueAsString(outputData.get("result"));

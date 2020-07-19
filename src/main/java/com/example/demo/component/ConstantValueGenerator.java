@@ -16,31 +16,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ConstantValueGenerator {
-    Logger LOG = LoggerFactory.getLogger(ConstantValueGenerator.class);
-
-    final String type ="literal";
+    Logger logger = LoggerFactory.getLogger(ConstantValueGenerator.class);
 
     @Autowired
     FakerContextResolver fakerContextResolver;
 
-    FakeValuesService fakeValuesService = new FakeValuesService(
-            new Locale("en-GB"), new RandomService());
-
-
-    //only keep one of the nullable or optional..if optional keep it as null
-    // and keep a setting in meta like: show null = true!
-
-    public void generate(Map<String,Object> output, Map<String,Object> schema, String key, String path, CheckpointResolver checkpointResolver) throws Exception {
+    public void generate(Map<String,Object> output, Map<String,Object> schema, String key, Stack<String> path, CheckpointResolver checkpointResolver) throws Exception {
+        FakeValuesService fakeValuesService = new FakeValuesService(new Locale("en-GB"), new RandomService());
 
         Object result =null;
 
-        path = path+"/"+key;
+        path.add(key);
         String id = (String)schema.get("use");
 
         if (id!=null) {
@@ -73,7 +63,7 @@ public class ConstantValueGenerator {
                 else {
                     String generator = String.valueOf(schema.get(DataDefinition.CONSTANT_TYPE));
                     if (ConstantType.MOCK.equalsIgnoreCase(generator)){
-                        result = fakerContextResolver.getValue(String.valueOf(schema.get(DataDefinition.VALUE)));
+                        result = String.valueOf(fakerContextResolver.getValue(String.valueOf(schema.get(DataDefinition.VALUE))));
                     }else if (ConstantType.REGEX.equalsIgnoreCase(generator)){
                         result = fakeValuesService.regexify(String.valueOf(schema.get(DataDefinition.VALUE)));
                     }else{
@@ -85,6 +75,8 @@ public class ConstantValueGenerator {
             }
         }
         output.put(key,result);
+        logger.info("VALUE GENERATED {} for path {}",result,String.join("->",path));
+        path.pop();
 
     }
 

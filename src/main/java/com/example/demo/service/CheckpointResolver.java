@@ -22,7 +22,7 @@ public class CheckpointResolver {
         Map<String,Object> allKeys = new HashMap<>();
         allKeys.put("keys",checkpoints);
         Map<String,Object> out = new HashMap<>();
-        objectDataGenerator.generate(out,allKeys,"result","",null);//checkpoint null so
+        objectDataGenerator.generate(out,allKeys,"result",new Stack<>(),null);//checkpoint null so
         checkpointDataStore =(Map<String,Object>) out.get("result");
 
     }

@@ -1,9 +1,6 @@
-package com.example.demo.component;
+package com.example.demo.generator;
 
-import com.example.demo.constants.DataDefinition;
-import com.example.demo.constants.DataType;
-import com.example.demo.constants.ConstantType;
-import com.example.demo.exception.IncorrectSchemaException;
+import com.example.demo.constants.ApplicationConstants;
 import com.example.demo.exception.UndefinedTypeException;
 import com.example.demo.service.CheckpointResolver;
 import com.example.demo.service.FakerContextResolver;
@@ -20,7 +17,7 @@ import java.util.*;
 
 @Component
 public class ConstantValueGenerator {
-    Logger logger = LoggerFactory.getLogger(ConstantValueGenerator.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(ConstantValueGenerator.class);
 
     @Autowired
     FakerContextResolver fakerContextResolver;
@@ -34,38 +31,34 @@ public class ConstantValueGenerator {
         String id = (String)schema.get("use");
 
         if (id!=null) {
-            if (checkpointResolver==null){
-                System.out.println("Checkpoint can't be used in chekpoint");
-                throw  new IncorrectSchemaException("'use' keyword can't be applied to a Checkpoint");
-            }
             result = checkpointResolver.getForCheckpoint(id);
         }
         else{
-            String dataType = (String) schema.get(DataDefinition.DATA_TYPE);
-            String optional =String.valueOf(schema.get(DataDefinition.OPTIONAL));
+            String dataType = (String) schema.get(ApplicationConstants.DATA_TYPE);
+            String optional =String.valueOf(schema.get(ApplicationConstants.OPTIONAL));
 
             if (!DataUtility.generateOptional(optional)){
-                boolean isValueIn = schema.containsKey(DataDefinition.VALUE_IN);
-                boolean isGenerator = schema.containsKey(DataDefinition.CONSTANT_TYPE);
+                boolean isValueIn = schema.containsKey(ApplicationConstants.VALUE_IN);
+                boolean isGenerator = schema.containsKey(ApplicationConstants.CONSTANT_TYPE);
 
                 if (!isValueIn && !isGenerator){
-                    if(DataType.DECIMAL.equalsIgnoreCase(dataType)){
+                    if(ApplicationConstants.DECIMAL.equalsIgnoreCase(dataType)){
                         result = getDoubleValue(schema);
                     }
-                    else if (DataType.INTEGER.equalsIgnoreCase(dataType)){
+                    else if (ApplicationConstants.INTEGER.equalsIgnoreCase(dataType)){
                         result = getIntegerValue(schema);
                     }
                 }
                 else if (isValueIn){
-                    List<Object> values = (List<Object>) schema.get(DataDefinition.VALUE_IN);
+                    List<Object> values = (List<Object>) schema.get(ApplicationConstants.VALUE_IN);
                     result = values.get(DataUtility.generateRandomIntInRange(0,values.size()));
                 }
                 else {
-                    String generator = String.valueOf(schema.get(DataDefinition.CONSTANT_TYPE));
-                    if (ConstantType.MOCK.equalsIgnoreCase(generator)){
-                        result = String.valueOf(fakerContextResolver.getValue(String.valueOf(schema.get(DataDefinition.VALUE))));
-                    }else if (ConstantType.REGEX.equalsIgnoreCase(generator)){
-                        result = fakeValuesService.regexify(String.valueOf(schema.get(DataDefinition.VALUE)));
+                    String generator = String.valueOf(schema.get(ApplicationConstants.CONSTANT_TYPE));
+                    if (ApplicationConstants.MOCK.equalsIgnoreCase(generator)){
+                        result = String.valueOf(fakerContextResolver.getValue(String.valueOf(schema.get(ApplicationConstants.VALUE))));
+                    }else if (ApplicationConstants.REGEX.equalsIgnoreCase(generator)){
+                        result = fakeValuesService.regexify(String.valueOf(schema.get(ApplicationConstants.VALUE)));
                     }else{
                         throw new UndefinedTypeException("The generator "+generator+" is not a defined.");
                     }
@@ -75,21 +68,21 @@ public class ConstantValueGenerator {
             }
         }
         output.put(key,result);
-        logger.info("VALUE GENERATED {} for path {}",result,String.join("->",path));
+        LOGGER.debug("VALUE GENERATED {} for path {}",result,String.join("->",path));
         path.pop();
 
     }
 
     private  Double getDoubleValue(Map<String,Object> props){
-        int min_val = Integer.parseInt(String.valueOf(props.getOrDefault(DataDefinition.MIN_VALUE,0)));
-        int max_val = Integer.parseInt(String.valueOf(props.get(DataDefinition.MAX_VALUE)));
-        int decimal = Integer.parseInt(String.valueOf(props.getOrDefault(DataDefinition.DECIMAL_PLACES,2)));
+        int min_val = Integer.parseInt(String.valueOf(props.getOrDefault(ApplicationConstants.MIN_VALUE,0)));
+        int max_val = Integer.parseInt(String.valueOf(props.get(ApplicationConstants.MAX_VALUE)));
+        int decimal = Integer.parseInt(String.valueOf(props.getOrDefault(ApplicationConstants.DECIMAL_PLACES,2)));
         String out = String.format("%." + decimal + "f", DataUtility.generateDecimalInRange(min_val,max_val));
         return Double.valueOf(out);
     }
     private  Integer getIntegerValue(Map<String,Object> props){
-        int min_val = Integer.parseInt(String.valueOf(props.getOrDefault(DataDefinition.MIN_VALUE,0)));
-        int max_val = Integer.parseInt(String.valueOf(props.get(DataDefinition.MAX_VALUE)));
+        int min_val = Integer.parseInt(String.valueOf(props.getOrDefault(ApplicationConstants.MIN_VALUE,0)));
+        int max_val = Integer.parseInt(String.valueOf(props.get(ApplicationConstants.MAX_VALUE)));
         return DataUtility.generateRandomIntInRange(min_val,max_val);
     }
 

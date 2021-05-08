@@ -40,8 +40,8 @@ data:
       type: constant #type is constant, introduce value type as regex!, value_in, constant_type..so on
       data_type: string
       constant_type: regex
-      value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
-#      checkpoint: CHECKPOINT_ID
+#      value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
+      checkpoint: CHECKPOINT_ID
     dob: #featur date with format, timezone
       type: constant
       constant_type: mock

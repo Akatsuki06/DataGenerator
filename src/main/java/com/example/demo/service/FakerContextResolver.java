@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 @Service
 public class FakerContextResolver {
 
-    Logger LOG = LoggerFactory.getLogger(FakerContextResolver.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(FakerContextResolver.class);
 
     final Faker faker = new Faker();
 

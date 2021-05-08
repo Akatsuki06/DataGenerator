@@ -1,25 +1,24 @@
 package com.example.demo.service;
 
-import com.example.demo.component.ListValueGenerator;
-import com.example.demo.component.ConstantValueGenerator;
-import com.example.demo.component.ObjectDataGenerator;
+import com.example.demo.generator.ListValueGenerator;
+import com.example.demo.generator.ConstantValueGenerator;
+import com.example.demo.generator.ObjectDataGenerator;
 import com.example.demo.utils.YamlUtility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class DataGeneratorService {
 
-    Logger LOG = LoggerFactory.getLogger(DataGeneratorService.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(DataGeneratorService.class);
 
-    @Value("${data-gen.schema}")
-    String schemaPath;
 
     @Autowired
     ObjectDataGenerator objectDataGenerator;
@@ -29,8 +28,10 @@ public class DataGeneratorService {
     ConstantValueGenerator constantValueGenerator;
 
 
-    public String generate() throws Exception {
+    @Async
+    public CompletableFuture<String> generate(String schemaPath) throws Exception {
 
+        LOGGER.info("Thread: {}",Thread.currentThread().getId());
         CheckpointResolver checkpointResolver = new CheckpointResolver(objectDataGenerator);
         Stack<String> path = new Stack<>();
         Map<String,Object> ymlData = YamlUtility.readYamlFile(schemaPath);
@@ -40,16 +41,17 @@ public class DataGeneratorService {
 
 
         checkpointResolver.generateForCheckpoints(checkpoints);
-        //todo: use a queue instead of string path!
+
         objectDataGenerator.generate(outputData,data,"result",path,checkpointResolver);
 
 
         String result = new ObjectMapper().writeValueAsString(outputData.get("result"));
 
-        return result;
+        return CompletableFuture.completedFuture(result);
     }
 
 
 
 
 }
+

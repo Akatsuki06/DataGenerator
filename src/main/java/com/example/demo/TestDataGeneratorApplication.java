@@ -11,6 +11,3 @@ public class TestDataGeneratorApplication {
 	}
 
 }
-
-//	//https://www.baeldung.com/java-faker
-//	//https://www.baeldung.com/regular-expressions-java

@@ -1,7 +1,6 @@
-package com.example.demo.component;
+package com.example.demo.generator;
 
-import com.example.demo.constants.DataDefinition;
-import com.example.demo.constants.ObjectType;
+import com.example.demo.constants.ApplicationConstants;
 import com.example.demo.exception.UndefinedTypeException;
 import com.example.demo.service.CheckpointResolver;
 import com.example.demo.utils.DataUtility;
@@ -14,7 +13,7 @@ import java.util.*;
 
 @Component
 public class ListValueGenerator {
-    private final Logger logger = LoggerFactory.getLogger(ListValueGenerator.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(ListValueGenerator.class);
 
     @Autowired
     ObjectDataGenerator objectDataGenerator;
@@ -33,21 +32,21 @@ public class ListValueGenerator {
         if (id!=null){
             outputList = (List<Object>)checkpointResolver.getForCheckpoint(id);
         }else{
-            int max_len =(int) schema.get(DataDefinition.MAX_LEN);//its mandatory else throw exception
-            int min_len = (int) schema.getOrDefault(DataDefinition.MIN_LEN,0);
+            int max_len =(int) schema.get(ApplicationConstants.MAX_LEN);//its mandatory else throw exception
+            int min_len = (int) schema.getOrDefault(ApplicationConstants.MIN_LEN,0);
             int nObj = DataUtility.generateRandomIntInRange(min_len,max_len+1);
-            String optional =String.valueOf(schema.get(DataDefinition.OPTIONAL));
+            String optional =String.valueOf(schema.get(ApplicationConstants.OPTIONAL));
 
             if (!DataUtility.generateOptional(optional)){
                 Map<String,Object> index = (Map<String, Object>) schema.get("index");
-                String indexType = ((String)index.get(DataDefinition.TYPE));
+                String indexType = ((String)index.get(ApplicationConstants.TYPE));
                 Map<String,Object> mapData = new HashMap<>();
                 for (int i = 0; i <nObj ; i++) {
-                    if (ObjectType.OBJECT.equalsIgnoreCase(indexType)){
-                            objectDataGenerator.generate(mapData,(Map<String, Object>) index.get(DataDefinition.DATA),key,path,checkpointResolver);
-                    }else if (ObjectType.CONSTANT.equalsIgnoreCase(indexType)){
+                    if (ApplicationConstants.OBJECT.equalsIgnoreCase(indexType)){
+                            objectDataGenerator.generate(mapData,(Map<String, Object>) index.get(ApplicationConstants.DATA),key,path,checkpointResolver);
+                    }else if (ApplicationConstants.CONSTANT.equalsIgnoreCase(indexType)){
                            constantValueGenerator.generate(mapData,index,key,path,checkpointResolver);
-                    }else if(ObjectType.LIST.equalsIgnoreCase(indexType)){
+                    }else if(ApplicationConstants.LIST.equalsIgnoreCase(indexType)){
                             this.generate(mapData,index,key,path,checkpointResolver);
                     }else{
                         System.out.println("Not valid Type");

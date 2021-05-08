@@ -1,6 +1,4 @@
-package com.example.demo.component;
-
-import com.example.demo.service.CheckpointResolver;
+package com.example.demo.generator;
 
 import java.util.List;
 import java.util.Map;

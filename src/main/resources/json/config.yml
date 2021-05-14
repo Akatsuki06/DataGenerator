@@ -1,9 +1,5 @@
 
-#concat two  string values
-# value_concat : delimeter comma separeted checkpoint <only for string>
 
-
-#data
 meta:
   key: value
 
@@ -31,36 +27,29 @@ data:
       use: CHECKPOINT_FN
     last_name:
       type: constant
-      value_in: ["Damon","Demon","Daemon"] # picks one value out of it!
-  #    constant_type: mock not required if value_in is there already
-  #    value: last_name not required if value_in is there
+      value_in: ["Damon","Demon","Daemon"]
       data_type: string
       optional: false
     id:
-      type: constant #type is constant, introduce value type as regex!, value_in, constant_type..so on
+      type: constant
       data_type: string
       constant_type: regex
-#      value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
       checkpoint: CHECKPOINT_ID
-    dob: #featur date with format, timezone
+    dob:
       type: constant
       constant_type: mock
       data_type: string
       value: date.birthday
-  #  info:
-  #    data:
-  #      id:
-  #        value_use: ID # if this is defined, then only define data type, dont use save with this!
-  #        data_type: string
+
     skills:
       type: list
-      min_len: 2 #if not given upto value len
+      min_len: 2
       max_len: 2
-      unique: true # in this case each index will then be unique!!!
+      unique: true
       index:
         type: constant
         data_type: string
-        value_in: ["java","python","js","cpp","c#"]  # if data it will be list of object else normal stuff here
+        value_in: ["java","python","js","cpp","c#"]
     friendList:
       type: list
       max_len: 5
@@ -82,12 +71,10 @@ data:
               data_type: string
     expertise:
       type: object
-  #    value: data not required
       data:
         keys:
           java:
             type: object
-    #        value: data not required
             optional: true
             data:
               keys:
@@ -122,28 +109,3 @@ data:
         index:
           type: constant
           use: CHECKPOINT_FN
-
-
-
-
-
-
-  #constant -> value
-  #list -> index
-  #object ->data
-
-  #types: constant, literal_mock, literal_regex,  object, list , literal_set (to take form selected set)
-  #literal_mock, data_type
-
-  #    values will give constant value in list
-
-  #list a list of values , constant ( a constant value),
-  #value_in, values_in, value_in
-
-
-  #FEATURE:
-
-  # case sensitive data!
-  # date and date format, timezone
-  #probability to generate random data
-  #null value in data YES or NO?

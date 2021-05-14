@@ -1,6 +1,12 @@
 package io.github.datagenerator.builder;
 
 public interface MockupData {
-     Object getJson();
-     JsonData.TYPE getType();
+     Object toJson();
+     TYPE getType();
+     enum TYPE{
+          JSON_OBJECT,
+          JSON_LIST,
+          JSON_CONSTANT
+     }
 }
+

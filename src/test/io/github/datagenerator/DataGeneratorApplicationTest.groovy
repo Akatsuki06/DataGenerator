@@ -26,7 +26,7 @@ class DataGeneratorApplicationTest extends Specification {
                 .setValue(23).build();
 
         FieldData fieldValueData2 = FieldData.newBuilder(FieldData.TYPE.INTEGER)
-                .setValue("eareraw").build();
+                .setValue("Hello World").build();
         ObjectData objectData1 =ObjectData.newBuilder()
                 .setData("key", FieldData.newBuilder(FieldData.TYPE.INTEGER)
                         .setValue(23).build()).build();

@@ -4,7 +4,7 @@ import io.github.datagenerator.generator.ListValueGenerator;
 import io.github.datagenerator.generator.ConstantValueGenerator;
 import io.github.datagenerator.generator.ObjectDataGenerator;
 import io.github.datagenerator.utils.YamlUtility;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class DataGeneratorService {
         objectDataGenerator.generate(outputData,data,"result",path,checkpointResolver);
 
 
-        String result = new ObjectMapper().writeValueAsString(outputData.get("result"));
+        String result = String.valueOf(new JSONObject(outputData.get("result")));
 
         return CompletableFuture.completedFuture(result);
     }

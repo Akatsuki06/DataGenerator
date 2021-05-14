@@ -5,8 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.0.RELEASE</version>
-		<relativePath/>
+		<version>2.4.4</version>
 	</parent>
 	<groupId>io.github</groupId>
 	<artifactId>data-generator</artifactId>
@@ -22,7 +21,7 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 
 
@@ -80,28 +79,30 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.4.4</version>
 			</plugin>
-		<plugin>
-			<groupId>org.codehaus.gmavenplus</groupId>
-				<artifactId>gmavenplus-plugin</artifactId>
-			<version>1.5</version>
-			<executions>
-				<execution>
-					<goals>
-						<goal>addTestSources</goal>
-						<goal>testCompile</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.gmavenplus</groupId>
+					<artifactId>gmavenplus-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>addTestSources</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
-<!--	<distributionManagement>-->
-<!--		<repository>-->
-<!--			<id>github</id>-->
-<!--			<name>GitHub OWNER Apache Maven Packages</name>-->
-<!--			<url>https://maven.pkg.github.com/Akatsuki06/TestDataGenerator</url>-->
-<!--		</repository>-->
-<!--	</distributionManagement>-->
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/Akatsuki06/DataGenerator</url>
+		</repository>
+	</distributionManagement>
 </project>

@@ -4,23 +4,8 @@ package io.github.datagenerator.builder;
 import io.github.datagenerator.utils.RandomDataUtility;
 import com.mifmif.common.regex.Generex;
 
-public class FieldValueData implements MockupData{
-
-    @Override
-    public Object getJson() {
-        return value;
-    }
-
-    @Override
-    public JsonData.TYPE getType() {
-        return JsonData.TYPE.JSON_CONSTANT;
-    }
-
-    public FieldValueData.TYPE getDataType(){
-        return type;
-    }
-
-    public enum TYPE{
+public class FieldData implements MockupData{
+     private enum TYPE{
         STRING,
         BOOLEAN,
         DECIMAL,
@@ -30,16 +15,40 @@ public class FieldValueData implements MockupData{
     private Object value;
     private TYPE type;
 
-    public FieldValueData(Builder builder){
+
+
+    public FieldData(Builder builder){
         this.type=builder.type;
         this.value=builder.value;
     }
+
     public static Builder newBuilder(TYPE type){
         return new Builder(type);
     }
+
+    public static Builder newBuilder(){
+        return new Builder();
+    }
+
+    public FieldData.TYPE getDataType(){
+        return this.type;
+    }
+
+    @Override
+    public Object toJson() {
+        return this.value;
+    }
+
+    @Override
+    public MockupData.TYPE getType() {
+        return MockupData.TYPE.JSON_CONSTANT;
+    }
+
     static class Builder{
         private TYPE type;
         private Object value;
+
+        public Builder (){ }
 
         public Builder (TYPE type){
             this.type=type;
@@ -57,9 +66,10 @@ public class FieldValueData implements MockupData{
             return this;
         }
 
-        public FieldValueData build(){
-            FieldValueData fieldValueData = new FieldValueData(this);
-            return fieldValueData;
+        public FieldData build(){
+            FieldData fieldData = new FieldData(this);
+            return fieldData;
         }
+
     }
 }

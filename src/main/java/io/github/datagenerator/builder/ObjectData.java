@@ -7,7 +7,7 @@ import java.util.Map;
 public class ObjectData implements MockupData{
     private Map<String,MockupData> dataMap;
 
-    private ObjectData(){}
+
     public ObjectData(Builder builder){
         this.dataMap = builder.dataMap;
     }
@@ -17,19 +17,19 @@ public class ObjectData implements MockupData{
     }
 
     @Override
-    public Object getJson() {
+    public Object toJson() {
         JSONObject jsonObject = new JSONObject();
         for (String key: dataMap.keySet()){
             MockupData mockupData = dataMap.get(key);
-            Object value = mockupData.getJson();
+            Object value = mockupData.toJson();
             jsonObject.put(key,value==null?JSONObject.NULL:value);
         }
         return jsonObject;
     }
 
     @Override
-    public JsonData.TYPE getType() {
-        return JsonData.TYPE.JSON_OBJECT;
+    public MockupData.TYPE getType() {
+        return MockupData.TYPE.JSON_OBJECT;
     }
 
     public static class Builder{

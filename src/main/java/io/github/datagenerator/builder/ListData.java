@@ -24,13 +24,19 @@ public class ListData implements MockupData{
     }
 
     @Override
-    public Object getJson() {
-        return new JSONArray(this.jsonDataList);
+    public Object toJson() {
+
+        JSONArray jsonArray = new JSONArray();
+        for (MockupData mockupData: jsonDataList){
+            jsonArray.put(mockupData.toJson());
+        }
+
+        return jsonArray;
     }
 
     @Override
-    public JsonData.TYPE getType() {
-        return JsonData.TYPE.JSON_LIST;
+    public  MockupData.TYPE getType() {
+        return MockupData.TYPE.JSON_LIST;
     }
 
     public static class Builder{
@@ -44,7 +50,7 @@ public class ListData implements MockupData{
             return this;
         }
 
-        public Builder setIndexedData(List<MockupData> jsonDataList){
+        public Builder setDataFromList(List<MockupData> jsonDataList){
             this.jsonDataList=jsonDataList;
             return this;
         }
@@ -57,4 +63,3 @@ public class ListData implements MockupData{
     }
 
 }
-//currently the list is homogeneous

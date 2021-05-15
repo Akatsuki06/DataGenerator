@@ -1,5 +1,7 @@
 package com.github.datagenerator.generator;
 
+import com.github.datagenerator.builder.FieldData;
+import com.github.datagenerator.builder.MockupData;
 import com.github.datagenerator.constants.ApplicationConstants;
 import com.github.datagenerator.service.CheckpointResolver;
 import com.github.datagenerator.service.FakerContextResolver;
@@ -87,4 +89,13 @@ public class ConstantValueGenerator {
     }
 
 
+    public MockupData generateData(Map<String, Object> schema) {
+        MockupData mockupData = null;
+        FieldData.Builder fieldDataBuilder = FieldData.newBuilder();
+        String value = (String) schema.get("value");
+
+        fieldDataBuilder.setValue(value);
+
+        return fieldDataBuilder.build();
+    }
 }

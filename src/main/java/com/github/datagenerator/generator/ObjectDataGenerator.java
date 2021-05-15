@@ -1,6 +1,9 @@
 package com.github.datagenerator.generator;
 
+import com.github.datagenerator.builder.MockupData;
+import com.github.datagenerator.builder.ObjectData;
 import com.github.datagenerator.constants.ApplicationConstants;
+import com.github.datagenerator.exception.DataValidationException;
 import com.github.datagenerator.exception.UndefinedTypeException;
 import com.github.datagenerator.service.CheckpointResolver;
 import com.github.datagenerator.utils.RandomDataUtility;
@@ -9,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -51,7 +55,7 @@ public class ObjectDataGenerator  {
                         } else if (ApplicationConstants.LIST.equalsIgnoreCase(type)) {
                             listValueGenerator.generate(mapData, props, objKey,path,checkpointResolver);
                         } else if ((ApplicationConstants.OBJECT.equalsIgnoreCase(type))) {
-                            generate(mapData, (Map<String, Object>) props.get(ApplicationConstants.DATA), objKey,path,checkpointResolver);
+                            generate(mapData, (Map<String, Object>) props.get(ApplicationConstants.SCHEMA), objKey,path,checkpointResolver);
                         } else {
                             throw new UndefinedTypeException("The type `" + type + "` is not a defined type.");
                         }
@@ -67,5 +71,30 @@ public class ObjectDataGenerator  {
         }
         output.put(key,mapData);
         path.pop();
+    }
+
+
+    public MockupData generateData(Map<String,Object> schema) throws DataValidationException {
+
+        ObjectData.Builder objectDataBuilder = ObjectData.newBuilder();
+
+        List<Map<String,Object>> keys = (List<Map<String,Object>>)schema.get("keys");
+
+        for (Map<String,Object> keyObject: keys){
+            MockupData data = null;
+            if ("objectData".equals(keyObject.get("type"))){
+               data = generateData(schema);
+            }else if ("listData".equals(keyObject.get("type"))){
+                data = listValueGenerator.generateData(schema);
+            }else if ("fieldData".equals(keyObject.get("type"))){
+                data = constantValueGenerator.generateData(schema);
+            }
+
+            objectDataBuilder.setData((String) keyObject.get("key"),data);
+        }
+
+
+
+        return objectDataBuilder.build();
     }
 }

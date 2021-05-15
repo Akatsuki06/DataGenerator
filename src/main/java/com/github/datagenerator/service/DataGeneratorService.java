@@ -1,5 +1,6 @@
 package com.github.datagenerator.service;
 
+import com.github.datagenerator.builder.MockupData;
 import com.github.datagenerator.generator.ListValueGenerator;
 import com.github.datagenerator.generator.ConstantValueGenerator;
 import com.github.datagenerator.generator.ObjectDataGenerator;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+
+import static com.github.datagenerator.constants.ApplicationConstants.SCHEMA;
 
 @Service
 public class DataGeneratorService {
@@ -35,18 +38,29 @@ public class DataGeneratorService {
         CheckpointResolver checkpointResolver = new CheckpointResolver(objectDataGenerator);
         Stack<String> path = new Stack<>();
         Map<String,Object> ymlData = YamlUtility.readYamlFile(schemaPath);
-        Map<String,Object> data = (Map<String,Object>)ymlData.get("data");
+
         Map<String,Object> checkpoints = (Map<String,Object>)ymlData.get("checkpoints");
         Map<String,Object> outputData = new HashMap<>();
 
 
+        Map<String,Object> schema = (Map<String,Object>)ymlData.get(SCHEMA);
+
+
         checkpointResolver.generateForCheckpoints(checkpoints);
 
-        objectDataGenerator.generate(outputData,data,"result",path,checkpointResolver);
+//        objectDataGenerator.generate(outputData,data,"result",path,checkpointResolver);
+//        String result = String.valueOf(new JSONObject(outputData.get("result")));
 
+        MockupData mockupData = null;
+        if ("objectData".equals(schema.get("type"))){
+            mockupData = objectDataGenerator.generateData(schema);
+        }else if ("listData".equals(schema.get("type"))){
 
-        String result = String.valueOf(new JSONObject(outputData.get("result")));
+        }else if("fieldData".equals(schema.get("type"))){
 
+        }
+
+        String result = mockupData.toJson().toString();
         return CompletableFuture.completedFuture(result);
     }
 

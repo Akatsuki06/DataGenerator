@@ -1,6 +1,9 @@
 package com.github.datagenerator.generator;
 
+import com.github.datagenerator.builder.ListData;
+import com.github.datagenerator.builder.MockupData;
 import com.github.datagenerator.constants.ApplicationConstants;
+import com.github.datagenerator.exception.DataValidationException;
 import com.github.datagenerator.exception.UndefinedTypeException;
 import com.github.datagenerator.service.CheckpointResolver;
 import com.github.datagenerator.utils.RandomDataUtility;
@@ -43,7 +46,7 @@ public class ListValueGenerator {
                 Map<String,Object> mapData = new HashMap<>();
                 for (int i = 0; i <nObj ; i++) {
                     if (ApplicationConstants.OBJECT.equalsIgnoreCase(indexType)){
-                            objectDataGenerator.generate(mapData,(Map<String, Object>) index.get(ApplicationConstants.DATA),key,path,checkpointResolver);
+                            objectDataGenerator.generate(mapData,(Map<String, Object>) index.get(ApplicationConstants.SCHEMA),key,path,checkpointResolver);
                     }else if (ApplicationConstants.CONSTANT.equalsIgnoreCase(indexType)){
                            constantValueGenerator.generate(mapData,index,key,path,checkpointResolver);
                     }else if(ApplicationConstants.LIST.equalsIgnoreCase(indexType)){
@@ -64,4 +67,24 @@ public class ListValueGenerator {
     }
 
 
+    public MockupData generateData(Map<String, Object> schema) throws DataValidationException {
+
+        ListData.Builder listDataBuilder = ListData.newBuilder();
+        MockupData mockupData = null;
+        int minLength = Integer.parseInt((String)schema.get("minLen"));
+        int maxLength = Integer.parseInt((String)schema.get("maxLen"));
+
+        Map<String,Object> index = (Map<String, Object>) schema.get("index");
+
+        if ("objectData".equals(index.get("type"))){
+            mockupData = objectDataGenerator.generateData(schema);
+        }else if ("listData".equals(index.get("type"))){
+            mockupData = generateData(schema);
+        }else if ("fieldData".equals(index.get("type"))){
+            mockupData = constantValueGenerator.generateData(schema);
+        }
+        listDataBuilder.setData(minLength,maxLength,mockupData);
+
+        return listDataBuilder.build();
+    }
 }

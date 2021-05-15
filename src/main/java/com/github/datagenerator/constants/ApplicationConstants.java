@@ -21,7 +21,7 @@ public class ApplicationConstants {
     public final static String INDEX = "index";
     public final static String CHECKPOINT = "checkpoint";
     public final static String USE = "use";
-    public final static String DATA = "data";
+    public final static String SCHEMA = "schema";
     public final static String STRING = "string";
     public final static String DECIMAL = "decimal";
     public final static String INTEGER = "integer";

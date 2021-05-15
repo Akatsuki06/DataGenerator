@@ -5,7 +5,7 @@ import com.github.datagenerator.utils.RandomDataUtility;
 import com.mifmif.common.regex.Generex;
 
 public class FieldData implements MockupData{
-     private enum TYPE{
+     public enum TYPE{
         STRING,
         BOOLEAN,
         DECIMAL,
@@ -44,7 +44,7 @@ public class FieldData implements MockupData{
         return MockupData.TYPE.JSON_CONSTANT;
     }
 
-    static class Builder{
+    public static class Builder{
         private TYPE type;
         private Object value;
 

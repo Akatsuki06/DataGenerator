@@ -18,37 +18,26 @@ import java.util.concurrent.CompletableFuture;
 public class ApplicationInitializer implements ApplicationRunner {
     private final Logger LOGGER = LoggerFactory.getLogger(ApplicationInitializer.class);
 
-    @Autowired
-    DataGeneratorService dataGeneratorService;
-
     @Value("${datagen.schema.path}")
     private String schemaPath;
     @Value("${datagen.out.path}")
     private String outputPath;
-    @Value("${datagen.out.count}")
-    private Integer outCount;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         LOGGER.info("============Starting the application");
 
-        List<String> generatedData = new ArrayList<>();
-
         StopWatch processWatch = new StopWatch();
         processWatch.start();
-        List<CompletableFuture<String>> futures = new ArrayList<>();
 
+        DataGeneratorService dataGeneratorService = new DataGeneratorService(schemaPath,null);
 
-        for (int i=0;i<outCount;i++){
-            futures.add(dataGeneratorService.generate(schemaPath));
-        }
-        for (int i=0;i<outCount;i++){
-            generatedData.add(futures.get(i).get());
-        }
+        List<String> data = dataGeneratorService.process();
+
         processWatch.stop();
         LOGGER.info("Took {} seconds",processWatch.getTotalTimeSeconds());
 
         LOGGER.info("============Done generating data");
-        LOGGER.info("DATA=====\n{}",generatedData);
+        LOGGER.info("DATA=====\n{}",data);
     }
 }

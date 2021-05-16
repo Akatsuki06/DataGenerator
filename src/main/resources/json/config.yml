@@ -1,167 +1,46 @@
 
-
-generator-class: com.data.Generator
+count: 4
 
 variables:
-  id: generateId
-  first_name: getFName
-  last_name: getLName
-  zipcode: generateZip
-  state: generateState, $zipcode
-  city: generateCity, $zipcode
+  id: idNumber.ssnValid
+  first_name: name.firstName
+  last_name: name.lastName
+  zipcode: address.zipCode
+  state: address.state
+  city: address.city
+  sample: address.city
 
 
 
 
 
-meta:
-  key: value
-
-checkpoints:
-  CHECKPOINT_FN:
-    type: constant
-    constant_type: mock
-    value: name.firstName
-    data_type: string
-  CHECKPOINT_ID:
-    type: constant
-    data_type: string
-    constant_type: regex
-    value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
 
 schema:
   type: objectData
   keys:
     - key: id
       type: fieldData
-      value: $id
+      value: id
     - key: first_name
       type: fieldData
-      value: $first_name
+      value: first_name
     - key: last_name
       type: fieldData
-      value: $last_name
+      value: last_name
     - key: interests
       type: listData
       min_len: 3
       max_len: 5
       index:
-        type: fieldData
-        value: getInterests
-
-#    first_name:
-#      type: constant
-#      constant_type: mock
-#      value: name.firstName
-#      data_type: string
-#      use: CHECKPOINT_FN
-#    last_name:
-#      type: constant
-#      value_in: ["Damon","Demon","Daemon"]
-#      data_type: string
-#      optional: false
-#    id:
-#      type: constant
-#      data_type: string
-#      constant_type: regex
-#      checkpoint: CHECKPOINT_ID
-#    dob:
-#      type: constant
-#      constant_type: mock
-#      data_type: string
-#      value: date.birthday
-##
-#
-#schema:
-#  type: object
-#  keys:
-#    first_name:
-#      type: constant
-#      constant_type: mock
-#      value: name.firstName
-#      data_type: string
-#      use: CHECKPOINT_FN
-#    last_name:
-#      type: constant
-#      value_in: ["Damon","Demon","Daemon"]
-#      data_type: string
-#      optional: false
-#    id:
-#      type: constant
-#      data_type: string
-#      constant_type: regex
-#      checkpoint: CHECKPOINT_ID
-#    dob:
-#      type: constant
-#      constant_type: mock
-#      data_type: string
-#      value: date.birthday
-
-#    skills:
-#      type: list
-#      min_len: 2
-#      max_len: 2
-#      unique: true
-#      index:
-#        type: constant
-#        data_type: string
-#        value_in: ["java","python","js","cpp","c#"]
-#    friendList:
-#      type: list
-#      max_len: 5
-#      min_len: 2
-#      index:
-#        type: object
-#        data:
-#          keys:
-#            id:
-#              use: CHECKPOINT_ID
-#              type: constant
-#              constant_type: regex
-#              data_type: string
-#              value: "[1-9][0-9]{6}\\~[1-9]{4,5}\\~[1-9]"
-#            first_name:
-#              type: constant
-#              constant_type: mock
-#              value: name.firstName
-#              data_type: string
-#    expertise:
-#      type: object
-#      data:
-#        keys:
-#          java:
-#            type: object
-#            optional: true
-#            data:
-#              keys:
-#                spring boot:
-#                  type: constant
-#                  value_in: ["beginner","proficient","advanced","expert"]
-#                  optional: true
-#                kafka:
-#                  type: constant
-#                  value_in: ["beginner","proficient","advanced","expert"]
-#                  optional: true
-#          python:
-#            type: object
-#            value: data
-#            optional: true
-#            data:
-#              keys:
-#                django:
-#                  type: constant
-#                  value_in: ["beginner","proficient","advanced","expert"]
-#                  optional: true
-#                keras:
-#                  type: constant
-#                  value_in: ["beginner","proficient","advanced","expert"]
-#                  optional: true
-#    arrays:
-#      type: list
-#      max_len: 5
-#      index:
-#        type: list
-#        max_len: 6
-#        index:
-#          type: constant
-#          use: CHECKPOINT_FN
+        type: listData
+        min_len: 3
+        max_len: 4
+        index:
+          type: objectData
+          keys:
+            - key: type
+              type: fieldData
+              value: sample
+            - key: type
+              type: fieldData
+              value: sample

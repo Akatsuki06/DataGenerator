@@ -1,7 +1,6 @@
-# DataGenerator [![Build Status](https://travis-ci.com/travis-ci/travis-web.svg?branch=master)](https://travis-ci.com/travis-ci/travis-web)
+# DataGenerator
 
-
-This tool can be used to generate data of desired schema. This can be particularly useful for testing where high volume of mockup data is required.
+This tool can be used to generate data of desired schema. This is particularly useful for testing where high volume of mockup data is required.
 
 
 ## Usage

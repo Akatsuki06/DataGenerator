@@ -17,10 +17,16 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
       - name: Maven Build
         run: mvn clean install
       - name: Publish package
-        run: mvn --batch-mode deploy
+        run: mvn --batch-mode clean install
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx

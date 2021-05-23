@@ -9,10 +9,10 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
-
-import java.util.ArrayList;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import org.apache.commons.io.FileUtils;
 
 @Component
 public class ApplicationInitializer implements ApplicationRunner {
@@ -33,7 +33,8 @@ public class ApplicationInitializer implements ApplicationRunner {
         DataGeneratorService dataGeneratorService = new DataGeneratorService(schemaPath,null);
 
         List<String> data = dataGeneratorService.process();
-
+        File outFile = new File(outputPath);
+        FileUtils.writeLines(outFile, StandardCharsets.UTF_8.name(), data);
         processWatch.stop();
         LOGGER.info("Took {} seconds",processWatch.getTotalTimeSeconds());
 

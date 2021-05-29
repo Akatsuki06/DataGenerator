@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import java.io.File;
@@ -23,6 +25,9 @@ public class ApplicationInitializer implements ApplicationRunner {
     @Value("${datagen.out.path}")
     private String outputPath;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         LOGGER.info("============Starting the application");
@@ -36,9 +41,10 @@ public class ApplicationInitializer implements ApplicationRunner {
         File outFile = new File(outputPath);
         FileUtils.writeLines(outFile, StandardCharsets.UTF_8.name(), data);
         processWatch.stop();
+
         LOGGER.info("Took {} seconds",processWatch.getTotalTimeSeconds());
 
         LOGGER.info("============Done generating data");
-        LOGGER.info("DATA=====\n{}",data);
+        SpringApplication.exit(applicationContext,()->0);
     }
 }

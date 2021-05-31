@@ -26,7 +26,7 @@ jobs:
       - name: Maven Build
         run: mvn clean install
       - name: Publish package
-        run: mvn --batch-mode clean install
+        run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
